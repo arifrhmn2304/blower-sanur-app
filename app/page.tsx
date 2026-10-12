@@ -243,6 +243,19 @@ export default function Home() {
       const statusBayar = sisaBayar <= 0 ? "LUNAS" : "BELUM LUNAS";
       const totalOngkirKurir = (parseInt(editData.jumlahUnit) || 0) * 50000;
 
+      const kA1 = (editData.kurirAntar1 || "").trim();
+      const kA2 = editData.jmlAntar === '2' ? (editData.kurirAntar2 || "").trim() : "";
+      const kJ1 = (editData.kurirJemput1 || "").trim();
+      const kJ2 = editData.jmlJemput === '2' ? (editData.kurirJemput2 || "").trim() : "";
+
+      // LOGIKA STATUS OTOMATIS OLEH OWNER DARI RIWAYAT
+      let autoStatusUnit = "Belum Diantar";
+      if (kJ1 || kJ2) {
+        autoStatusUnit = "Selesai";
+      } else if (kA1 || kA2) {
+        autoStatusUnit = "Sedang Dipakai";
+      }
+
       const payload = {
         ...editData,
         uangVendor,
@@ -250,8 +263,11 @@ export default function Home() {
         sisaBayar,
         statusBayar,
         totalOngkirKurir,
-        kurirAntar2: editData.jmlAntar === '2' ? editData.kurirAntar2 : "",
-        kurirJemput2: editData.jmlJemput === '2' ? editData.kurirJemput2 : "",
+        statusUnit: autoStatusUnit,
+        kurirAntar1: kA1,
+        kurirAntar2: kA2,
+        kurirJemput1: kJ1,
+        kurirJemput2: kJ2,
       };
 
       delete payload.uangVendorStr;
@@ -260,7 +276,7 @@ export default function Home() {
       delete payload.jmlJemput;
 
       await update(ref(db, '/' + editData.id), payload);
-      showToast('Data berhasil diperbarui!', 'success');
+      showToast('Data & status berhasil diperbarui!', 'success');
       setShowEditModal(false);
     } catch (e) {
       console.error(e);
@@ -455,7 +471,15 @@ export default function Home() {
         {/* MODAL 4: EDIT DATA TRANSAKSI */}
         {showEditModal && editData && (
           <div style={modalOverlayStyle}>
-            <div style={{...modalContentStyle, width: '95%', maxWidth: '500px', padding: '24px', maxHeight: '90vh', overflowY: 'auto'}} className="glass-panel animate-enter">
+            <div style={{
+              ...modalContentStyle, 
+              width: '95%', 
+              maxWidth: '500px', 
+              padding: '24px', 
+              maxHeight: '85vh', 
+              overflowY: 'auto', 
+              paddingBottom: '100px'
+            }} className="glass-panel animate-enter">
               <h3 style={{ margin: '0 0 20px', color: '#60a5fa', fontSize: '18px' }}>✏️ Edit Transaksi & Kurir</h3>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
@@ -510,16 +534,16 @@ export default function Home() {
                     <select value={editData.jmlAntar} onChange={(e) => handleChangeEdit('jmlAntar', e.target.value)} style={{...inputStyle, padding: '10px', fontSize: '12px', marginBottom: '8px', textAlign: 'left', letterSpacing: 'normal'}}>
                       <option value="1" style={{background: '#0f172a'}}>1 Orang</option><option value="2" style={{background: '#0f172a'}}>2 Orang</option>
                     </select>
-                    <input type="text" placeholder="Kurir 1" value={editData.kurirAntar1} onChange={(e) => handleChangeEdit('kurirAntar1', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', marginBottom: '6px', textAlign: 'left', letterSpacing: 'normal'}} />
-                    {editData.jmlAntar === '2' && <input type="text" placeholder="Kurir 2" value={editData.kurirAntar2} onChange={(e) => handleChangeEdit('kurirAntar2', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', textAlign: 'left', letterSpacing: 'normal'}} />}
+                    <input type="text" placeholder="Kurir 1" value={editData.kurirAntar1 || ''} onChange={(e) => handleChangeEdit('kurirAntar1', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', marginBottom: '6px', textAlign: 'left', letterSpacing: 'normal'}} />
+                    {editData.jmlAntar === '2' && <input type="text" placeholder="Kurir 2" value={editData.kurirAntar2 || ''} onChange={(e) => handleChangeEdit('kurirAntar2', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', textAlign: 'left', letterSpacing: 'normal'}} />}
                   </div>
                   <div style={{ background: 'rgba(0,0,0,0.25)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.04)' }}>
                     <label style={{...labelStyle, color: '#34d399'}}>📦 Jemput (Jml Orang):</label>
                     <select value={editData.jmlJemput} onChange={(e) => handleChangeEdit('jmlJemput', e.target.value)} style={{...inputStyle, padding: '10px', fontSize: '12px', marginBottom: '8px', textAlign: 'left', letterSpacing: 'normal'}}>
                       <option value="1" style={{background: '#0f172a'}}>1 Orang</option><option value="2" style={{background: '#0f172a'}}>2 Orang</option>
                     </select>
-                    <input type="text" placeholder="Kurir 1" value={editData.kurirJemput1} onChange={(e) => handleChangeEdit('kurirJemput1', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', marginBottom: '6px', textAlign: 'left', letterSpacing: 'normal'}} />
-                    {editData.jmlJemput === '2' && <input type="text" placeholder="Kurir 2" value={editData.kurirJemput2} onChange={(e) => handleChangeEdit('kurirJemput2', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', textAlign: 'left', letterSpacing: 'normal'}} />}
+                    <input type="text" placeholder="Kurir 1" value={editData.kurirJemput1 || ''} onChange={(e) => handleChangeEdit('kurirJemput1', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', marginBottom: '6px', textAlign: 'left', letterSpacing: 'normal'}} />
+                    {editData.jmlJemput === '2' && <input type="text" placeholder="Kurir 2" value={editData.kurirJemput2 || ''} onChange={(e) => handleChangeEdit('kurirJemput2', e.target.value)} list="listKurirEdit" style={{...inputStyle, padding: '10px', fontSize: '12px', marginBottom: '6px', textAlign: 'left', letterSpacing: 'normal'}} />}
                   </div>
                 </div>
               </div>
