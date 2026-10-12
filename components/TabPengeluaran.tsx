@@ -165,7 +165,7 @@ export default function TabPengeluaran({
 
           <div style={{ gridColumn: 'span 2' }}>
             <label style={labelStyle}>Nominal (Rp):</label>
-            <input type="text" value={nominalPengeluaran} onChange={handleRupiahChange} placeholder="Contoh: 50.000" style={inputStyle} required />
+            <input type="text" value={nominalPengeluaran} onChange={handleRupiahChange} placeholder="Contoh: 50.000" inputMode="numeric" pattern="[0-9]*" style={inputStyle} required />
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>

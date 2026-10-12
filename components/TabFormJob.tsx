@@ -149,38 +149,17 @@ export default function TabFormJob({ listVendor, showToast }: TabFormJobProps) {
 
           <div>
             <label style={labelStyle}>𖣘 Jumlah Unit Blower:</label>
-            <input 
-              type="number" 
-              value={jumlahUnit} 
-              onChange={(e) => setJumlahUnit(e.target.value)} 
-              placeholder="Contoh: 2" 
-              style={inputStyle} 
-              min="1" 
-              required 
-            />
+            <input type="number" value={jumlahUnit} onChange={(e) => setJumlahUnit(e.target.value)} placeholder="Contoh: 2" inputMode="numeric" pattern="[0-9]*" style={inputStyle} min="1" required />
           </div>
 
           <div>
             <label style={labelStyle}>💵 Total Biaya Sewa (Rp):</label>
-            <input 
-              type="text" 
-              value={uangVendor} 
-              onChange={(e) => handleRupiahChange(e, setUangVendor)} 
-              placeholder="Contoh: 350.000" 
-              style={inputStyle} 
-              required 
-            />
+            <input type="text" value={uangVendor} onChange={(e) => handleRupiahChange(e, setUangVendor)} placeholder="Contoh: 350.000" inputMode="numeric" pattern="[0-9]*" style={inputStyle} required />
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>
             <label style={labelStyle}>💳 Uang Muka / DP Diterima (Rp):</label>
-            <input 
-              type="text" 
-              value={sudahBayar} 
-              onChange={(e) => handleRupiahChange(e, setSudahBayar)} 
-              placeholder="Isi 0 jika belum bayar sama sekali" 
-              style={inputStyle} 
-            />
+            <input type="text" value={sudahBayar} onChange={(e) => handleRupiahChange(e, setSudahBayar)} placeholder="Isi 0 jika belum bayar sama sekali" inputMode="numeric" pattern="[0-9]*" style={inputStyle} />
             <span style={{ fontSize: '11px', color: '#64748b', marginTop: '6px', display: 'block' }}>*Sisa piutang akan dihitung otomatis oleh sistem.</span>
           </div>
 

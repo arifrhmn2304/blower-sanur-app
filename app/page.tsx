@@ -351,7 +351,7 @@ export default function Home() {
             <div style={modalContentStyle} className="glass-panel animate-enter">
               <h3 style={{ color: '#fff', marginTop: 0, fontSize: '20px', fontWeight: '900' }}>Enter PIN Owner</h3>
               <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '20px' }}>Masukkan 6 digit PIN rahasia akses penuh.</p>
-              <input type="password" value={pinOwner} onChange={(e) => setPinOwner(e.target.value)} placeholder="••••••" style={inputStyle} />
+              <input type="password" value={pinOwner} onChange={(e) => setPinOwner(e.target.value)} placeholder="••••••" inputMode="numeric" pattern="[0-9]*" style={inputStyle} />
               <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                 <button onClick={() => { setShowPassModal(false); setShowLoginModal(true); }} className="btn-interactive" style={{ padding: '14px', background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', fontWeight: '700', flex: 1, cursor: 'pointer' }}>Batal</button>
                 <button onClick={handleVerifikasiPIN} className="btn-interactive" style={{ padding: '14px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '16px', fontWeight: '800', flex: 1, cursor: 'pointer', boxShadow: '0 8px 20px rgba(59,130,246,0.4)' }}>Unlock</button>
@@ -479,7 +479,7 @@ export default function Home() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div>
                     <label style={labelStyle}>Jumlah Unit:</label>
-                    <input type="number" value={editData.jumlahUnit} onChange={(e) => handleChangeEdit('jumlahUnit', e.target.value)} style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
+                    <input type="number" value={editData.jumlahUnit} onChange={(e) => handleChangeEdit('jumlahUnit', e.target.value)} inputMode="numeric" pattern="[0-9]*" style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
                   </div>
                   <div>
                     <label style={labelStyle}>Status Kurir Utama:</label>
@@ -492,11 +492,11 @@ export default function Home() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div>
                     <label style={labelStyle}>Biaya Sewa (Rp):</label>
-                    <input type="text" value={editData.uangVendorStr} onChange={(e) => handleRupiahEdit('uangVendorStr', e.target.value)} style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
+                    <input type="text" value={editData.uangVendorStr} onChange={(e) => handleRupiahEdit('uangVendorStr', e.target.value)} inputMode="numeric" pattern="[0-9]*" style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
                   </div>
                   <div>
                     <label style={labelStyle}>Diterima / DP (Rp):</label>
-                    <input type="text" value={editData.sudahBayarStr} onChange={(e) => handleRupiahEdit('sudahBayarStr', e.target.value)} style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
+                    <input type="text" value={editData.sudahBayarStr} onChange={(e) => handleRupiahEdit('sudahBayarStr', e.target.value)} inputMode="numeric" pattern="[0-9]*" style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
                   </div>
                 </div>
 
@@ -590,17 +590,19 @@ export default function Home() {
           </div>
         )}
         
-        {/* RENDER TOAST NOTIFICATIONS */}
-        <div className="toast-container">
-          {toasts.map((t) => (
-            <div key={t.id} className={`toast-item ${t.type}`}>
-              <span style={{ fontSize: '18px' }}>
-                {t.type === 'success' ? '✅' : t.type === 'error' ? '❌' : 'ℹ️'}
-              </span>
-              <span style={{ flex: 1, lineHeight: '1.4' }}>{t.message}</span>
-            </div>
-          ))}
-        </div>
+        {/* RENDER TOAST NOTIFICATIONS (POPUP TENGAH) */}
+        {toasts.length > 0 && (
+          <div className="toast-container">
+            {toasts.map((t) => (
+              <div key={t.id} className={`toast-item ${t.type}`}>
+                <span style={{ fontSize: '24px' }}>
+                  {t.type === 'success' ? '✅' : t.type === 'error' ? '❌' : 'ℹ️'}
+                </span>
+                <span style={{ flex: 1, lineHeight: '1.4', textAlign: 'center' }}>{t.message}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
 
       {/* BOTTOM NAVIGATION BAR (Mobile) */}
