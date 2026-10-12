@@ -127,6 +127,11 @@ input[type="date"] {
   100% { opacity: 1; transform: scale(1); }
 }
 
+@keyframes toastFadeOut {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
 .toast-container {
   position: fixed;
   top: 0;
@@ -140,9 +145,10 @@ input[type="date"] {
   justify-content: center;
   gap: 12px;
   pointer-events: none;
-  background: rgba(3, 7, 18, 0.6); /* Glass overlay background */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(3, 7, 18, 0.4); /* Dibuat lebih tipis biar nggak lemot nge-blur */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
 }
 
 .toast-item {
@@ -150,19 +156,20 @@ input[type="date"] {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 22px;
+  padding: 14px 20px;
   border-radius: 20px;
   background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 14px;
   font-weight: 700;
-  min-width: 290px;
+  min-width: 270px;
   max-width: 400px;
-  animation: toastPop 0.4s var(--ease-spring) forwards;
+  /* Dipercepat jadi 0.2s agar langsung pop-up tanpa jeda */
+  animation: toastPop 0.2s ease forwards;
 }
 
 .toast-item.success { border-bottom: 4px solid #10b981; }
