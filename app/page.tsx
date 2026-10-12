@@ -30,7 +30,7 @@ export default function Home() {
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 1000);
+    }, 500);
   };
 
   // State untuk Modal Kurir
