@@ -100,7 +100,7 @@ export default function KaryawanView({ globalData, showToast }: KaryawanViewProp
   
   activeJobs.sort((a, b) => (parseStandardDate(a.tanggal)?.getTime() || 0) - (parseStandardDate(b.tanggal)?.getTime() || 0));
 
-  const getPeringatanHari = (tanggalEvent: string) => {
+ const getPeringatanHari = (tanggalEvent: string) => {
     const tgl = parseStandardDate(tanggalEvent);
     if (!tgl) return null;
     
@@ -109,18 +109,22 @@ export default function KaryawanView({ globalData, showToast }: KaryawanViewProp
     tgl.setHours(0, 0, 0, 0);
 
     const selisihWaktu = tgl.getTime() - hariIni.getTime();
-    const selisihHari = Math.ceil(selisihWaktu / (1000 * 3600 * 24)) + 1;
+    const selisihHari = Math.round(selisihWaktu / (1000 * 3600 * 24));
 
-    // Jika pas H-1 atau hari H pengantaran
+    // Jika hari ini adalah tanggal acaranya (Selisih 0 hari)
     if (selisihHari === 0) {
       return { teks: "🔥 HARI INI! Segera Antarkan!", warna: '#ef4444', bg: 'rgba(239, 68, 68, 0.2)' };
     }
-    // Jika masih beberapa hari ke depan, tampilkan hitung mundur H-X
-    if (selisihHari > 0) {
+    // Jika 1 hari sebelum acara (H-1) -> Kalau lu mau H-1 udah muncul "Hari Ini", ganti jadi selisihHari <= 1
+    if (selisihHari === 1) {
+      return { teks: "🔥 HARI INI! Segera Antarkan!", warna: '#ef4444', bg: 'rgba(239, 68, 68, 0.2)' };
+    }
+    // Jika masih beberapa hari ke depan
+    if (selisihHari > 1) {
       return { teks: `⏳ H-${selisihHari} Pengantaran`, warna: '#3b82f6', bg: 'rgba(59, 130, 246, 0.2)' };
     }
     
-    return null; // Lewat dari tanggal acara tidak menampilkan apa-apa
+    return null;
   };
 
   return (
