@@ -109,13 +109,18 @@ export default function KaryawanView({ globalData, showToast }: KaryawanViewProp
     tgl.setHours(0, 0, 0, 0);
 
     const selisihWaktu = tgl.getTime() - hariIni.getTime();
-    const selisihHari = Math.ceil(selisihWaktu / (1000 * 3600 * 24));
+    const selisihHari = Math.ceil(selisihWaktu / (1000 * 3600 * 24)) + 1;
 
-    if (selisihHari === 0) return { teks: "🔥 HARI INI! Segera Antarkan!", warna: '#ef4444', bg: 'rgba(239, 68, 68, 0.2)' };
-    if (selisihHari === 1) return { teks: "⚠️ BESOK! Persiapkan", warna: '#f59e0b', bg: 'rgba(245, 158, 11, 0.2)' };
-    if (selisihHari > 1 && selisihHari <= 3) return { teks: `⏳ H-${selisihHari} Pengantaran`, warna: '#3b82f6', bg: 'rgba(59, 130, 246, 0.2)' };
-    if (selisihHari < 0) return { teks: "🚨 TERLAMBAT DIANTAR!", warna: '#991b1b', bg: 'rgba(153, 27, 27, 0.3)' };
-    return null;
+    // Jika pas H-1 atau hari H pengantaran
+    if (selisihHari === 0) {
+      return { teks: "🔥 HARI INI! Segera Antarkan!", warna: '#ef4444', bg: 'rgba(239, 68, 68, 0.2)' };
+    }
+    // Jika masih beberapa hari ke depan, tampilkan hitung mundur H-X
+    if (selisihHari > 0) {
+      return { teks: `⏳ H-${selisihHari} Pengantaran`, warna: '#3b82f6', bg: 'rgba(59, 130, 246, 0.2)' };
+    }
+    
+    return null; // Lewat dari tanggal acara tidak menampilkan apa-apa
   };
 
   return (
