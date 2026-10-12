@@ -179,7 +179,12 @@ export default function KaryawanView({ globalData, showToast }: KaryawanViewProp
                   
                   {item.linkMaps && (
                     <div style={{ marginTop: '4px' }}>
-                      <a href={item.linkMaps} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#38bdf8', textDecoration: 'none', fontWeight: '800', fontSize: '11px', background: 'rgba(56, 189, 248, 0.1)', padding: '6px 10px', borderRadius: '8px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+                      <a 
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.linkMaps)}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#38bdf8', textDecoration: 'none', fontWeight: '800', fontSize: '11px', background: 'rgba(56, 189, 248, 0.1)', padding: '6px 10px', borderRadius: '8px', border: '1px solid rgba(56, 189, 248, 0.2)' }}
+                      >
                         <span>🗺️</span> Buka Navigasi Google Maps
                       </a>
                     </div>
