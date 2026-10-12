@@ -230,13 +230,35 @@ export default function TabRiwayat({
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item) => {
-                  const uangVendor = Number(item.uangVendor) || 0;
-                  const sudahBayar = Number(item.sudahBayar) || 0;
-                  const sisaBayar = Number(item.sisaBayar) || 0;
-                  const isLunas = sisaBayar <= 0;
-                  const kAntar = [item.kurirAntar1, item.kurirAntar2].filter(Boolean).join(' & ') || 'Belum Diantar';
-                  const kJemput = [item.kurirJemput1, item.kurirJemput2].filter(Boolean).join(' & ') || 'Belum Dijemput';
+              {/* BAGIAN DI DALAM KARTU MOBILE DAN TABEL DESKTOP */}
+              {filteredData.map((item, index) => {
+              const uangVendor = Number(item.uangVendor) || 0;
+              const sudahBayar = Number(item.sudahBayar) || 0;
+              const sisaBayar = Number(item.sisaBayar) || 0;
+              const isLunas = sisaBayar <= 0;
+              
+              const adaAntar = Boolean(item.kurirAntar1 || item.kurirAntar2);
+              const adaJemput = Boolean(item.kurirJemput1 || item.kurirJemput2);
+              
+              const kAntar = [item.kurirAntar1, item.kurirAntar2].filter(Boolean).join(' & ') || 'Belum Diantar';
+              const kJemput = [item.kurirJemput1, item.kurirJemput2].filter(Boolean).join(' & ') || 'Belum Dijemput';
+
+              // LOGIKA STATUS OTOMATIS BERDASARKAN KURIR
+              let statusUnitDinamis = "⏳ Belum Diantar";
+              let badgeStyleUnit = badgeBelum; // Warna Kuning/Orange (Default belum)
+
+              if (adaJemput) {
+                  statusUnitDinamis = "✅ Selesai";
+                  badgeStyleUnit = badgeLunas; // Warna Hijau
+              } else if (adaAntar) {
+                  statusUnitDinamis = "🚚 Sedang Dipakai";
+                  badgeStyleUnit = badgeProses; // Warna Biru (Ada tapi belum selesai)
+              }
+              
+              /* 
+                 Nanti di JSX (HTML)-nya, panggil statusnya pakai:
+                 <span style={badgeStyleUnit}>{statusUnitDinamis}</span>
+              */
 
                   return (
                     <tr key={item.id}>
