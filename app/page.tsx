@@ -30,7 +30,7 @@ export default function Home() {
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 3500);
+    }, 1500);
   };
 
   // State untuk Modal Kurir
@@ -492,11 +492,11 @@ export default function Home() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div>
                     <label style={labelStyle}>Biaya Sewa (Rp):</label>
-                    <input type="text" value={editData.uangVendorStr} onChange={(e) => handleRupiahEdit('uangVendorStr', e.target.value)} inputMode="numeric" pattern="[0-9]*" style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
+                    <input type="text" value={editData.uangVendorStr} onChange={(e) => handleRupiahEdit('uangVendorStr', e.target.value)} inputMode="numeric" style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
                   </div>
                   <div>
                     <label style={labelStyle}>Diterima / DP (Rp):</label>
-                    <input type="text" value={editData.sudahBayarStr} onChange={(e) => handleRupiahEdit('sudahBayarStr', e.target.value)} inputMode="numeric" pattern="[0-9]*" style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
+                    <input type="text" value={editData.sudahBayarStr} onChange={(e) => handleRupiahEdit('sudahBayarStr', e.target.value)} inputMode="numeric" style={{...inputStyle, padding: '12px', fontSize: '14px', textAlign: 'left', letterSpacing: 'normal'}} />
                   </div>
                 </div>
 

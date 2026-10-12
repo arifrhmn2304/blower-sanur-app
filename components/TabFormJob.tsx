@@ -154,12 +154,12 @@ export default function TabFormJob({ listVendor, showToast }: TabFormJobProps) {
 
           <div>
             <label style={labelStyle}>💵 Total Biaya Sewa (Rp):</label>
-            <input type="text" value={uangVendor} onChange={(e) => handleRupiahChange(e, setUangVendor)} placeholder="Contoh: 350.000" inputMode="numeric" pattern="[0-9]*" style={inputStyle} required />
+            <input type="text" value={uangVendor} onChange={(e) => handleRupiahChange(e, setUangVendor)} placeholder="Contoh: 350.000" inputMode="numeric" style={inputStyle} required />
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>
             <label style={labelStyle}>💳 Uang Muka / DP Diterima (Rp):</label>
-            <input type="text" value={sudahBayar} onChange={(e) => handleRupiahChange(e, setSudahBayar)} placeholder="Isi 0 jika belum bayar sama sekali" inputMode="numeric" pattern="[0-9]*" style={inputStyle} />
+            <input type="text" value={sudahBayar} onChange={(e) => handleRupiahChange(e, setSudahBayar)} placeholder="Isi 0 jika belum bayar sama sekali" inputMode="numeric" style={inputStyle} />
             <span style={{ fontSize: '11px', color: '#64748b', marginTop: '6px', display: 'block' }}>*Sisa piutang akan dihitung otomatis oleh sistem.</span>
           </div>
 
