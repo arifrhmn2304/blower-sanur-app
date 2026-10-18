@@ -166,13 +166,15 @@ export default function Home() {
             let peranArr = [];
             let totalNominal = 0;
 
-            // Tambahkan keterangan pembagian (Sendiri / Ber-2)
+            // Cari nama partner (filter nama selain dirinya sendiri)
             if (isAntar) {
-              peranArr.push(`Antar (${kAntar.length === 1 ? 'Sendiri' : 'Ber-2'})`);
+              const partnerAntar = kAntar.filter(k => k !== selectedKurir).join(' & ');
+              peranArr.push(partnerAntar ? `Antar (bersama ${partnerAntar})` : 'Antar (Sendiri)');
               totalNominal += tarifAntar;
             }
             if (isJemput) {
-              peranArr.push(`Jemput (${kJemput.length === 1 ? 'Sendiri' : 'Ber-2'})`);
+              const partnerJemput = kJemput.filter(k => k !== selectedKurir).join(' & ');
+              peranArr.push(partnerJemput ? `Jemput (bersama ${partnerJemput})` : 'Jemput (Sendiri)');
               totalNominal += tarifJemput;
             }
 
