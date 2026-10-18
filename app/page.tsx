@@ -169,22 +169,22 @@ export default function Home() {
             // Cari nama partner (filter nama selain dirinya sendiri)
             if (isAntar) {
               const partnerAntar = kAntar.filter(k => k !== selectedKurir).join(' & ');
-              peranArr.push(partnerAntar ? `Antar (bersama ${partnerAntar})` : 'Antar (Sendiri)');
+              peranArr.push(partnerAntar ? `Antar (Bersama: ${partnerAntar})` : 'Antar (Sendiri)');
               totalNominal += tarifAntar;
             }
             if (isJemput) {
               const partnerJemput = kJemput.filter(k => k !== selectedKurir).join(' & ');
-              peranArr.push(partnerJemput ? `Jemput (bersama ${partnerJemput})` : 'Jemput (Sendiri)');
+              peranArr.push(partnerJemput ? `Jemput (Bersama: ${partnerJemput})` : 'Jemput (Sendiri)');
               totalNominal += tarifJemput;
             }
 
-            // GABUNGKAN JADI 1 BARIS LOKASI
+            // GABUNGKAN JADI 1 BARIS (Dipisah pakai koma biar rapi kayak contoh lu)
             detailJobsKurir.push({ 
               id: item.id, 
               tanggal: item.tanggal, 
               alamat: item.alamat, 
               unit, 
-              peran: peranArr.join(' & '), 
+              peran: peranArr.join(', '), 
               nominal: totalNominal 
             });
             totalGajiKurirDetail += totalNominal;
@@ -200,12 +200,14 @@ export default function Home() {
     const keyK = selectedKurir.replace(/[^a-zA-Z0-9]/g, '_');
     const updates: any = {};
     
-    // FORMAT WA LEBIH SINGKAT & JELAS
-    let textWA = `*GAJI BLOWER SANUR*\n👤 *${selectedKurir}*\n\n`;
+    // FORMAT WA SESUAI TEMPLATE BARU
+    let textWA = `*REKAP GAJI BLOWER SANUR*\n👤 *${selectedKurir}*\n\n`;
+    
     detailJobsKurir.forEach((j, idx) => {
-      textWA += `${idx + 1}. ${formatTanggal(j.tanggal)} | ${j.peran}\n   📍 ${j.alamat} = Rp ${j.nominal.toLocaleString('id-ID')}\n`;
+      textWA += `📅 *${formatTanggal(j.tanggal)}* (${j.unit} Unit)\n📍 Lokasi: ${j.alamat}\n🚚 Role: ${j.peran}\n💰 Upah: Rp ${j.nominal.toLocaleString('id-ID')}\n\n`;
     });
-    textWA += `\n*TOTAL CAIR: Rp ${totalGajiKurirDetail.toLocaleString('id-ID')}* ✅\nMakasih kerjanya!`;
+    
+    textWA += `------------------------\n*TOTAL DITERIMA: Rp ${totalGajiKurirDetail.toLocaleString('id-ID')}* ✅\nTerima kasih atas kerja samanya!`;
 
     if (kirimWA && waInput.trim() !== '') {
       localStorage.setItem(`wa_kurir_${selectedKurir}`, waInput);
