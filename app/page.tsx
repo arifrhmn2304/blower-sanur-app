@@ -154,16 +154,38 @@ export default function Home() {
           const kAntar = [item.kurirAntar1, item.kurirAntar2].filter(Boolean);
           const kJemput = [item.kurirJemput1, item.kurirJemput2].filter(Boolean);
           const unit = item.jumlahUnit || 1;
-          const tarifAntar = (unit * 30000) / kAntar.length;
-          const tarifJemput = (unit * 20000) / kJemput.length;
+          
+          // Tarif dasar dibagi jumlah orang
+          const tarifAntar = (unit * 30000) / (kAntar.length || 1);
+          const tarifJemput = (unit * 20000) / (kJemput.length || 1);
 
-          if (kAntar.includes(selectedKurir)) {
-            detailJobsKurir.push({ id: item.id, tanggal: item.tanggal, alamat: item.alamat, unit, peran: `Antar (${kAntar.join(' & ')})`, nominal: tarifAntar });
-            totalGajiKurirDetail += tarifAntar;
-          }
-          if (kJemput.includes(selectedKurir)) {
-            detailJobsKurir.push({ id: item.id, tanggal: item.tanggal, alamat: item.alamat, unit, peran: `Jemput (${kJemput.join(' & ')})`, nominal: tarifJemput });
-            totalGajiKurirDetail += tarifJemput;
+          const isAntar = kAntar.includes(selectedKurir);
+          const isJemput = kJemput.includes(selectedKurir);
+
+          if (isAntar || isJemput) {
+            let peranArr = [];
+            let totalNominal = 0;
+
+            // Tambahkan keterangan pembagian (Sendiri / Ber-2)
+            if (isAntar) {
+              peranArr.push(`Antar (${kAntar.length === 1 ? 'Sendiri' : 'Ber-2'})`);
+              totalNominal += tarifAntar;
+            }
+            if (isJemput) {
+              peranArr.push(`Jemput (${kJemput.length === 1 ? 'Sendiri' : 'Ber-2'})`);
+              totalNominal += tarifJemput;
+            }
+
+            // GABUNGKAN JADI 1 BARIS LOKASI
+            detailJobsKurir.push({ 
+              id: item.id, 
+              tanggal: item.tanggal, 
+              alamat: item.alamat, 
+              unit, 
+              peran: peranArr.join(' & '), 
+              nominal: totalNominal 
+            });
+            totalGajiKurirDetail += totalNominal;
           }
         }
       }
@@ -176,11 +198,12 @@ export default function Home() {
     const keyK = selectedKurir.replace(/[^a-zA-Z0-9]/g, '_');
     const updates: any = {};
     
-    let textWA = `*REKAP GAJI BLOWER SANUR*\nHalo *${selectedKurir}*, berikut rincian gaji:\n\n`;
+    // FORMAT WA LEBIH SINGKAT & JELAS
+    let textWA = `*GAJI BLOWER SANUR*\n👤 *${selectedKurir}*\n\n`;
     detailJobsKurir.forEach((j, idx) => {
-      textWA += `${idx + 1}. 📅 *${formatTanggal(j.tanggal)}* (${j.unit} Unit)\n   📍 ${j.alamat}\n   🚚 Role: ${j.peran}\n   💰 Gaji: Rp ${j.nominal.toLocaleString('id-ID')}\n\n`;
+      textWA += `${idx + 1}. ${formatTanggal(j.tanggal)} | ${j.peran}\n   📍 ${j.alamat} = Rp ${j.nominal.toLocaleString('id-ID')}\n`;
     });
-    textWA += `------------------------\n*TOTAL DITERIMA: Rp ${totalGajiKurirDetail.toLocaleString('id-ID')}*\nStatus: *LUNAS* ✅\n\nTerima kasih atas kerja samanya!`;
+    textWA += `\n*TOTAL CAIR: Rp ${totalGajiKurirDetail.toLocaleString('id-ID')}* ✅\nMakasih kerjanya!`;
 
     if (kirimWA && waInput.trim() !== '') {
       localStorage.setItem(`wa_kurir_${selectedKurir}`, waInput);
@@ -387,13 +410,13 @@ export default function Home() {
                   <p style={{ color: '#94a3b8', textAlign: 'center', fontSize: '13px' }}>Tidak ada rincian job belum dibayar.</p>
                 ) : (
                   detailJobsKurir.map((j, idx) => (
-                    <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)', padding: '14px', borderRadius: '16px', marginBottom: '10px', fontSize: '12px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                        <span style={{ color: '#60a5fa', fontWeight: '800' }}>📅 {formatTanggal(j.tanggal)} ({j.unit} Unit)</span>
-                        <span style={{ color: '#fde047', fontWeight: '900' }}>Rp {j.nominal.toLocaleString('id-ID')}</span>
+                    // TAMPILAN KARTU RINCIAN LEBIH SINGKAT
+                    <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', borderRadius: '12px', marginBottom: '8px', fontSize: '12px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ color: '#60a5fa', fontWeight: '800' }}>📅 {formatTanggal(j.tanggal)} | {j.peran}</span>
+                        <span style={{ color: '#fde047', fontWeight: '900', fontSize: '13px' }}>Rp {j.nominal.toLocaleString('id-ID')}</span>
                       </div>
-                      <div style={{ color: '#fff', fontWeight: 'bold', marginBottom: '4px', fontSize: '14px' }}>📍 {j.alamat}</div>
-                      <div style={{ color: '#94a3b8', fontSize: '11px' }}>🚚 Role: {j.peran}</div>
+                      <div style={{ color: '#fff', fontWeight: 'bold', marginTop: '4px' }}>📍 {j.alamat}</div>
                     </div>
                   ))
                 )}

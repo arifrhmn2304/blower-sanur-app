@@ -69,6 +69,48 @@ export default function TabRiwayat({
 
   filteredData.sort((a, b) => (parseStandardDate(b.tanggal)?.getTime() || 0) - (parseStandardDate(a.tanggal)?.getTime() || 0));
 
+  // LOGIKA PINTAR: Cek status unit dan cek apakah semua kurir sudah dibayar
+  const getDynamicStatus = (item: any) => {
+    const kAntarArr = [item.kurirAntar1, item.kurirAntar2].filter(Boolean);
+    const kJemputArr = [item.kurirJemput1, item.kurirJemput2].filter(Boolean);
+    
+    let statusUnit = "⏳ Belum Diantar";
+    let badgeUnit = badgeBelum; 
+    if (kJemputArr.length > 0) {
+        statusUnit = "✅ Selesai";
+        badgeUnit = badgeLunas; 
+    } else if (kAntarArr.length > 0) {
+        statusUnit = "🚚 Sedang Dipakai";
+        badgeUnit = badgeProses; 
+    }
+
+    const semuaKurir = Array.from(new Set([...kAntarArr, ...kJemputArr]));
+    let statusGaji = "Belum Bayar";
+    let badgeGaji = badgeBelum;
+
+    if (semuaKurir.length > 0) {
+        // Cek jika seluruh kurir di job ini true pada properti lunas_NamaKurir
+        const semuaSudahLunas = semuaKurir.every(k => {
+            const keyK = String(k).replace(/[^a-zA-Z0-9]/g, '_');
+            return item[`lunas_${keyK}`] === true;
+        });
+        
+        if (semuaSudahLunas || item.statusKurir === "LUNAS") {
+            statusGaji = "LUNAS";
+            badgeGaji = badgeLunas;
+        }
+    } else if (item.statusKurir === "LUNAS") {
+        statusGaji = "LUNAS";
+        badgeGaji = badgeLunas;
+    }
+
+    return { 
+      statusUnit, badgeUnit, statusGaji, badgeGaji,
+      kAntar: kAntarArr.join(' & ') || 'Belum Diantar',
+      kJemput: kJemputArr.join(' & ') || 'Belum Dijemput'
+    };
+  };
+
   const exportDataKeExcel = () => {
     if (filteredData.length === 0) {
       showToast("Tidak ada data transaksi pada periode ini untuk di-download!", "error");
@@ -76,8 +118,7 @@ export default function TabRiwayat({
     }
 
     const excelData = filteredData.map((item) => {
-      const kAntar = [item.kurirAntar1, item.kurirAntar2].filter(Boolean).join(' & ');
-      const kJemput = [item.kurirJemput1, item.kurirJemput2].filter(Boolean).join(' & ');
+      const { statusUnit, statusGaji, kAntar, kJemput } = getDynamicStatus(item);
       const totalOngkir = Number(item.totalOngkirKurir) || 0;
       const totalSewa = Number(item.uangVendor) || 0;
 
@@ -90,12 +131,12 @@ export default function TabRiwayat({
         "Sudah Diterima (Rp)": Number(item.sudahBayar) || 0,
         "Sisa Piutang (Rp)": Number(item.sisaBayar) || 0,
         "Status Bayar Vendor": item.sisaBayar <= 0 ? "LUNAS" : "BELUM LUNAS",
-        "Status Unit": item.statusUnit || "Belum Diantar",
+        "Status Unit": statusUnit.replace(/[^a-zA-Z\s]/g, '').trim(),
         "Gaji Kurir (Rp)": totalOngkir,
         "Untung Bersih (Rp)": totalSewa - totalOngkir,
-        "Kurir Antar": kAntar || "-",
-        "Kurir Jemput": kJemput || "-",
-        "Status Gaji Kurir": item.statusKurir || "Belum Dibayar"
+        "Kurir Antar": kAntar === 'Belum Diantar' ? '-' : kAntar,
+        "Kurir Jemput": kJemput === 'Belum Dijemput' ? '-' : kJemput,
+        "Status Gaji Kurir": statusGaji
       };
     });
 
@@ -173,8 +214,8 @@ export default function TabRiwayat({
               const sudahBayar = Number(item.sudahBayar) || 0;
               const sisaBayar = Number(item.sisaBayar) || 0;
               const isLunas = sisaBayar <= 0;
-              const kAntar = [item.kurirAntar1, item.kurirAntar2].filter(Boolean).join(' & ') || 'Belum Diantar';
-              const kJemput = [item.kurirJemput1, item.kurirJemput2].filter(Boolean).join(' & ') || 'Belum Dijemput';
+              
+              const { statusUnit, badgeUnit, statusGaji, badgeGaji, kAntar, kJemput } = getDynamicStatus(item);
 
               return (
                 <div 
@@ -187,8 +228,8 @@ export default function TabRiwayat({
                       <b style={{ color: '#fff', fontSize: '15px', fontWeight: '900' }}>{item.vendor || 'Tanpa Nama'}</b><br />
                       <span style={{ fontSize: '11px', color: '#60a5fa', fontWeight: '800' }}>📅 {formatTanggal(item.tanggal)}</span>
                     </div>
-                    <span style={item.statusUnit === 'Selesai' ? badgeLunas : badgeProses}>
-                      {item.statusUnit || 'Belum Diantar'}
+                    <span style={badgeUnit}>
+                      {statusUnit}
                     </span>
                   </div>
 
@@ -197,7 +238,7 @@ export default function TabRiwayat({
                     <div style={mobileRow}><span style={{ color: '#94a3b8' }}>💰 Biaya / Masuk:</span><span>Rp {uangVendor.toLocaleString('id-ID')} / <b style={{ color: isLunas ? '#34d399' : '#fca5a5' }}>Rp {sudahBayar.toLocaleString('id-ID')}</b></span></div>
                     <div style={mobileRow}><span style={{ color: '#94a3b8' }}>🚚 Kurir Antar:</span><span style={{ color: '#fff' }}>{kAntar}</span></div>
                     <div style={mobileRow}><span style={{ color: '#94a3b8' }}>📦 Kurir Jemput:</span><span style={{ color: '#fff' }}>{kJemput}</span></div>
-                    <div style={mobileRow}><span style={{ color: '#94a3b8' }}>⚙️ Status Gaji:</span><span><span style={item.statusKurir === 'LUNAS' ? badgeLunas : badgeBelum}>{item.statusKurir || 'Belum Bayar'}</span></span></div>
+                    <div style={mobileRow}><span style={{ color: '#94a3b8' }}>⚙️ Status Gaji:</span><span><span style={badgeGaji}>{statusGaji}</span></span></div>
                   </div>
                   
                   <div style={{ display: 'flex', gap: '8px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
@@ -230,65 +271,43 @@ export default function TabRiwayat({
                 </tr>
               </thead>
               <tbody>
-              {/* BAGIAN DI DALAM KARTU MOBILE DAN TABEL DESKTOP */}
-              {filteredData.map((item, index) => {
-              const uangVendor = Number(item.uangVendor) || 0;
-              const sudahBayar = Number(item.sudahBayar) || 0;
-              const sisaBayar = Number(item.sisaBayar) || 0;
-              const isLunas = sisaBayar <= 0;
-              
-              const adaAntar = Boolean(item.kurirAntar1 || item.kurirAntar2);
-              const adaJemput = Boolean(item.kurirJemput1 || item.kurirJemput2);
-              
-              const kAntar = [item.kurirAntar1, item.kurirAntar2].filter(Boolean).join(' & ') || 'Belum Diantar';
-              const kJemput = [item.kurirJemput1, item.kurirJemput2].filter(Boolean).join(' & ') || 'Belum Dijemput';
+              {filteredData.map((item) => {
+                const uangVendor = Number(item.uangVendor) || 0;
+                const sudahBayar = Number(item.sudahBayar) || 0;
+                const sisaBayar = Number(item.sisaBayar) || 0;
+                const isLunas = sisaBayar <= 0;
+                
+                const { statusUnit, badgeUnit, statusGaji, badgeGaji, kAntar, kJemput } = getDynamicStatus(item);
 
-              // LOGIKA STATUS OTOMATIS BERDASARKAN KURIR
-              let statusUnitDinamis = "⏳ Belum Diantar";
-              let badgeStyleUnit = badgeBelum; // Warna Kuning/Orange (Default belum)
-
-              if (adaJemput) {
-                  statusUnitDinamis = "✅ Selesai";
-                  badgeStyleUnit = badgeLunas; // Warna Hijau
-              } else if (adaAntar) {
-                  statusUnitDinamis = "🚚 Sedang Dipakai";
-                  badgeStyleUnit = badgeProses; // Warna Biru (Ada tapi belum selesai)
-              }
-              
-              /* 
-                 Nanti di JSX (HTML)-nya, panggil statusnya pakai:
-                 <span style={badgeStyleUnit}>{statusUnitDinamis}</span>
-              */
-
-                  return (
-                    <tr key={item.id}>
-                      <td style={tdStyle}>{formatTanggal(item.tanggal)}</td>
-                      <td style={{ ...tdStyle, fontWeight: '900', color: '#fff' }}>{item.vendor}</td>
-                      <td style={tdStyle}>{item.alamat}</td>
-                      <td style={tdStyle}>{item.jumlahUnit} Unit</td>
-                      <td style={tdStyle}>Rp {uangVendor.toLocaleString('id-ID')}</td>
-                      <td style={{ ...tdStyle, color: isLunas ? '#34d399' : '#fca5a5', fontWeight: '900' }}>Rp {sudahBayar.toLocaleString('id-ID')}</td>
-                      <td style={{ ...tdStyle, color: '#fca5a5' }}>Rp {sisaBayar.toLocaleString('id-ID')}</td>
-                      <td style={tdStyle}>
-                        <span style={isLunas ? badgeLunas : badgeBelum}>{isLunas ? 'LUNAS' : 'BELUM'}</span>
-                      </td>
-                      <td style={tdStyle}>
-                        <span style={item.statusUnit === 'Selesai' ? badgeLunas : badgeProses}>{item.statusUnit || 'Belum Diantar'}</span>
-                      </td>
-                      <td style={tdStyle}>{kAntar}</td>
-                      <td style={tdStyle}>{kJemput}</td>
-                      <td style={tdStyle}>
-                        <span style={item.statusKurir === 'LUNAS' ? badgeLunas : badgeBelum}>{item.statusKurir || 'Belum Bayar'}</span>
-                      </td>
-                      <td style={tdStyle}>
-                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                          <button onClick={() => onBukaEditModal(item.id)} className="btn-interactive" style={btnEditStyle}>Edit</button>
-                          <button onClick={() => onHapusData(item.id)} className="btn-interactive" style={btnHapusStyle}>Hapus</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                return (
+                  <tr key={item.id}>
+                    <td style={tdStyle}>{formatTanggal(item.tanggal)}</td>
+                    <td style={{ ...tdStyle, fontWeight: '900', color: '#fff' }}>{item.vendor}</td>
+                    <td style={tdStyle}>{item.alamat}</td>
+                    <td style={tdStyle}>{item.jumlahUnit} Unit</td>
+                    <td style={tdStyle}>Rp {uangVendor.toLocaleString('id-ID')}</td>
+                    <td style={{ ...tdStyle, color: isLunas ? '#34d399' : '#fca5a5', fontWeight: '900' }}>Rp {sudahBayar.toLocaleString('id-ID')}</td>
+                    <td style={{ ...tdStyle, color: '#fca5a5' }}>Rp {sisaBayar.toLocaleString('id-ID')}</td>
+                    <td style={tdStyle}>
+                      <span style={isLunas ? badgeLunas : badgeBelum}>{isLunas ? 'LUNAS' : 'BELUM'}</span>
+                    </td>
+                    <td style={tdStyle}>
+                      <span style={badgeUnit}>{statusUnit}</span>
+                    </td>
+                    <td style={tdStyle}>{kAntar}</td>
+                    <td style={tdStyle}>{kJemput}</td>
+                    <td style={tdStyle}>
+                      <span style={badgeGaji}>{statusGaji}</span>
+                    </td>
+                    <td style={tdStyle}>
+                      <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                        <button onClick={() => onBukaEditModal(item.id)} className="btn-interactive" style={btnEditStyle}>Edit</button>
+                        <button onClick={() => onHapusData(item.id)} className="btn-interactive" style={btnHapusStyle}>Hapus</button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
               </tbody>
             </table>
           </div>
