@@ -177,10 +177,11 @@ export default function KaryawanView({ globalData, showToast }: KaryawanViewProp
                   <div style={rowStyle}><span style={{ color: '#94a3b8' }}>🚚 Kurir Antar:</span><span style={{ color: '#fff', fontWeight: '700' }}>{kAntar}</span></div>
                   <div style={rowStyle}><span style={{ color: '#94a3b8' }}>📦 Kurir Jemput:</span><span style={{ color: '#fff', fontWeight: '700' }}>{kJemput}</span></div>
                   
-                  {item.linkMaps && (
+                    {item.linkMaps && (
                     <div style={{ marginTop: '4px' }}>
                       <a 
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.linkMaps)}`} 
+                        // Jika isi linkMaps diawali dengan "http", buka langsung. Jika tidak, jadikan pencarian.
+                        href={item.linkMaps.startsWith('http') ? item.linkMaps : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.linkMaps)}`} 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#38bdf8', textDecoration: 'none', fontWeight: '800', fontSize: '11px', background: 'rgba(56, 189, 248, 0.1)', padding: '6px 10px', borderRadius: '8px', border: '1px solid rgba(56, 189, 248, 0.2)' }}
@@ -189,6 +190,7 @@ export default function KaryawanView({ globalData, showToast }: KaryawanViewProp
                       </a>
                     </div>
                   )}
+
                 </div>
 
                 {isEditing && (
