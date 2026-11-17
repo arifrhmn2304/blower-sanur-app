@@ -52,7 +52,7 @@ type ToastType = 'success' | 'error' | 'info';
 
 export default function Home() {
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [pinOwner, setPinOwner] = useState('');
   const [showPassModal, setShowPassModal] = useState(false);
   const [activeTab, setActiveTab] = useState('form');
@@ -341,6 +341,7 @@ export default function Home() {
       delete payload.sudahBayarStr;
       delete payload.jmlAntar;
       delete payload.jmlJemput;
+      delete payload.firebaseKey;
 
       await update(ref(db, '/' + editData.id), payload);
       showToast('Data & status berhasil diperbarui!', 'success');
@@ -490,7 +491,7 @@ export default function Home() {
               <button onClick={toggleTheme} className="theme-toggle" aria-label="Ganti tema" title="Ganti tema terang/gelap">
                 {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
               </button>
-              <span>Padang · ID</span>
+              <span>Sanur · Collection</span>
             </div>
           </div>
         </div>

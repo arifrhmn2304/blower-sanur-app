@@ -13,11 +13,6 @@ const FEATURES = [
     title: 'Atur kurir antar–jemput',
     desc: 'Penugasan dan ongkir kurir terhitung otomatis.',
   },
-  {
-    icon: ShieldCheck,
-    title: 'Keuangan tetap privat',
-    desc: 'Data penagihan dan kas hanya terbuka untuk Owner.',
-  },
 ];
 
 export default function AuthBrandPanel() {
@@ -25,7 +20,7 @@ export default function AuthBrandPanel() {
     <section className="auth-brand" aria-label="Tentang Blower Sanur">
       <div className="auth-brand-badge">
         <span className="auth-brand-dot" />
-        Layanan sewa blower · Sanur, Bali
+        Layanan sewa blower · Sanur, Collection
       </div>
 
       <ul className="auth-brand-features">
