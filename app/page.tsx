@@ -239,6 +239,11 @@ export default function Home() {
 
   const eksekusiPelunasan = async (kirimWA: boolean) => {
     if (!selectedKurir) return;
+    if (kirimWA && waInput.trim() === '') {
+      showToast('Isi nomor WhatsApp dulu untuk mengirim via WA.', 'error');
+      document.getElementById('wa-kurir')?.focus();
+      return;
+    }
     const keyK = selectedKurir.replace(/[^a-zA-Z0-9]/g, '_');
     const updates: any = {};
 
@@ -254,7 +259,14 @@ export default function Home() {
       localStorage.setItem(`wa_kurir_${selectedKurir}`, waInput);
       let phone = waInput.replace(/[^0-9]/g, '');
       if (phone.startsWith('0')) phone = '62' + phone.substring(1);
-      window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(textWA)}`, '_blank');
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(textWA)}`;
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     }
 
     detailJobsKurir.forEach((job) => (updates[`/${job.id}/lunas_${keyK}`] = true));
@@ -408,7 +420,7 @@ export default function Home() {
     userRole === 'KARYAWAN'
       ? 'Prioritas antar dan jemput unit dalam satu daftar kerja.'
       : activeTab === 'dashboard'
-        ? 'Performa kas, piutang, dan honor kurir pada periode terpilih.'
+        ? 'Performa kas, piutang, dan gaji kurir pada periode terpilih.'
         : activeTab === 'form'
           ? 'Catat order sewa baru dan periksa ringkasannya sebelum disimpan.'
           : activeTab === 'pengeluaran'
@@ -424,7 +436,7 @@ export default function Home() {
         <div className="auth-screen">
           <div className="auth-visual">
             <div className="auth-meta">
-              <span>Sanur Blower Works</span>
+              <span>Sanur Blower</span>
               <span className="live">Sistem online</span>
             </div>
             <div className="auth-visual-copy">
@@ -451,8 +463,8 @@ export default function Home() {
               </div>
             </div>
 
-            <h2 className="auth-title">Masuk ke konsol</h2>
-            <p className="auth-sub">Pilih peran akses. Owner memerlukan PIN 6 digit.</p>
+            <h2 className="auth-title">Masuk ke Halaman</h2>
+            <p className="auth-sub">Pilih peran akses. Owner memerlukan PIN Untuk Masuk.</p>
 
             <div className="role-list">
               <button className="role-card" onClick={() => handlePilihRole('OWNER')}>
@@ -504,7 +516,7 @@ export default function Home() {
             <div className="modal-title" id="pin-title">
               <KeyRound size={18} /> PIN Owner
             </div>
-            <p className="modal-sub">Masukkan 6 digit PIN untuk membuka akses penuh.</p>
+            <p className="modal-sub">Masukkan PIN untuk membuka akses penuh.</p>
             <input
               className="pin-input"
               type="password"

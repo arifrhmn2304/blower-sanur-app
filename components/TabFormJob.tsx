@@ -103,7 +103,7 @@ export default function TabFormJob({ listVendor, showToast }: TabFormJobProps) {
   const totalSewa = cleanNumber(uangVendor);
   const diterima = cleanNumber(sudahBayar);
   const sisa = totalSewa - diterima;
-  const honor = (parseInt(jumlahUnit, 10) || 0) * 50000;
+  const gaji = (parseInt(jumlahUnit, 10) || 0) * 50000;
 
   return (
     <div className="animate-enter" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -113,7 +113,7 @@ export default function TabFormJob({ listVendor, showToast }: TabFormJobProps) {
           <div className="panel-title"><ClipboardList size={15} strokeWidth={1.9} /> Order baru</div>
           <div className="panel-sub">Catat sewa unit blower untuk event</div>
         </div>
-        <span className="badge badge-info">Database live</span>
+        <span className="badge badge-info">Database Connected</span>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)', gap: 14, alignItems: 'start' }} className="form-layout">
@@ -246,15 +246,15 @@ export default function TabFormJob({ listVendor, showToast }: TabFormJobProps) {
               </dd>
             </div>
             <div className="list-row" style={{ padding: '11px 12px' }}>
-              <dt className="row-label">Estimasi honor kurir</dt>
-              <dd className="row-value num" style={{ margin: 0, color: 'var(--accent)' }}>Rp {honor.toLocaleString('id-ID')}</dd>
+              <dt className="row-label">Estimasi gaji kurir</dt>
+              <dd className="row-value num" style={{ margin: 0, color: 'var(--accent)' }}>Rp {gaji.toLocaleString('id-ID')}</dd>
             </div>
           </dl>
 
           <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--line)' }}>
             <Info size={13} style={{ color: 'var(--text-3)', flex: 'none', marginTop: 2 }} />
             <p className="helper" style={{ margin: 0 }}>
-              Honor kurir memakai tarif antar Rp 30.000 + jemput Rp 20.000 per unit. Bagi tugas kurir di tab Karyawan setelah order masuk.
+              gaji kurir memakai tarif antar Rp 30.000 + jemput Rp 20.000 per unit. Bagi tugas kurir di tab Karyawan setelah order masuk.
             </p>
           </div>
 

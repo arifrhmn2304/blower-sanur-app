@@ -131,7 +131,7 @@ export default function TabDashboard({
   const persenTertagih = sumKotor > 0 ? Math.round((sumMasuk / sumKotor) * 100) : 0;
   const marginBersih = sumMasuk > 0 ? Math.round((untungBersihRiil / sumMasuk) * 100) : 0;
 
-  // Skala bar komposisi: bandingkan arus masuk, biaya, dan laba pada rentang yang sama.
+  // Skala bar komposisi: bandingkan arus masuk, biaya, dan hasil pada rentang yang sama.
   const bridgeScale = Math.max(
     sumMasuk,
     sumOngkir,
@@ -203,14 +203,14 @@ export default function TabDashboard({
         </span>
       </div>
 
-      <section className="hero-panel corner" aria-label="Laba bersih periode">
+      <section className="hero-panel corner" aria-label="hasil bersih periode">
         <div className="hero-content">
-          <span className="mono-label" style={{ color: 'var(--accent)' }}>Net profit / periode</span>
+          <span className="mono-label" style={{ color: 'var(--accent)' }}>Hasil Bersih</span>
           <div className="hero-amount">
             <span className="curr">Rp</span>
             <CountUp value={untungBersihRiil} />
           </div>
-          <p className="hero-note">Sudah dikurangi honor kurir dan pengeluaran operasional periode ini.</p>
+          <p className="hero-note">Sudah dikurangi gaji kurir dan pengeluaran operasional periode ini.</p>
           <div className="hero-meta">
             <div>
               <span>Order</span>
@@ -225,13 +225,13 @@ export default function TabDashboard({
               <b>Rp {sumKotor.toLocaleString('id-ID')}</b>
             </div>
             <div>
-              <span>Margin</span>
+              <span>Perestase</span>
               <b className={marginBersih < 0 ? 'text-bad' : 'text-good'}>{marginBersih}%</b>
             </div>
           </div>
         </div>
 
-        <aside className="hero-bridge" aria-label="Komposisi laba bersih">
+        <aside className="hero-bridge" aria-label="Komposisi hasil bersih">
           <div className="hero-bridge-head">
             <span className="mono-label">Komposisi Keuangan</span>
             <span className="hero-bridge-chip">{persenTertagih}% tertagih</span>
@@ -250,7 +250,7 @@ export default function TabDashboard({
 
             <div className="hero-bridge-row" data-kind="cost">
               <div className="hero-bridge-row-top">
-                <span>Honor kurir</span>
+                <span>gaji kurir</span>
                 <b>−Rp {sumOngkir.toLocaleString('id-ID')}</b>
               </div>
               <div className="hero-bridge-track" aria-hidden="true">
@@ -270,7 +270,7 @@ export default function TabDashboard({
           </div>
 
           <div className="hero-bridge-net" data-negative={untungBersihRiil < 0}>
-            <span>Laba bersih</span>
+            <span>hasil bersih</span>
             <b>
               Rp <CountUp value={untungBersihRiil} />
             </b>
@@ -378,13 +378,13 @@ export default function TabDashboard({
           {Object.keys(rekapKurir).length === 0 ? (
             <div className="empty-state">
               <CircleCheck size={22} strokeWidth={1.7} />
-              <span>Seluruh honor kurir pada periode ini sudah lunas.</span>
+              <span>Seluruh gaji kurir pada periode ini sudah lunas.</span>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {Object.entries(rekapKurir).map(([nKurir, dataKurir]) => (
                 <div key={nKurir} className="list-row">
-                  <div className="payout-row" style={{ flex: 1, minWidth: 0 }}>
+                  <div className="payout-row" style={{ flex: 1, minWidth: 200 }}>
                     <div className="person">
                       <span className="avatar" aria-hidden="true">{initials(nKurir)}</span>
                       <div style={{ minWidth: 0 }}>

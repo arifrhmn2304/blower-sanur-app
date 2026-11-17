@@ -201,7 +201,7 @@ export default function TabRiwayat({
             <span className="stat-icon"><Search size={13} /></span>
           </div>
           <span className="stat-value">{filteredData.length}</span>
-          <span className="stat-foot">{keyword ? 'Hasil pencarian' : 'Periode terpilih'}</span>
+          <span className="stat-foot">{keyword ? 'Hasil pencarian' : 'Transaksi Terpilih'}</span>
         </div>
         <div className="stat">
           <div className="stat-top">
@@ -209,7 +209,7 @@ export default function TabRiwayat({
             <span className="stat-icon"><Wallet size={13} /></span>
           </div>
           <span className="stat-value" style={{ color: 'var(--info)' }}>Rp {totalSewa.toLocaleString('id-ID')}</span>
-          <span className="stat-foot">Nilai kontrak</span>
+          <span className="stat-foot">Total Uang Sewa</span>
         </div>
         <div className="stat">
           <div className="stat-top">
@@ -217,7 +217,7 @@ export default function TabRiwayat({
             <span className="stat-icon"><Download size={13} /></span>
           </div>
           <span className="stat-value" style={{ color: 'var(--good)' }}>Rp {totalMasuk.toLocaleString('id-ID')}</span>
-          <span className="stat-foot">Kas masuk</span>
+          <span className="stat-foot">Uang Masuk</span>
         </div>
         <div className="stat">
           <div className="stat-top">
@@ -225,7 +225,7 @@ export default function TabRiwayat({
             <span className="stat-icon"><Wallet size={13} /></span>
           </div>
           <span className="stat-value" style={{ color: totalSisa > 0 ? 'var(--bad)' : 'var(--good)' }}>Rp {totalSisa.toLocaleString('id-ID')}</span>
-          <span className="stat-foot">{totalSisa > 0 ? 'Belum tertagih' : 'Semua lunas'}</span>
+          <span className="stat-foot">{totalSisa > 0 ? 'Belum Tertagih' : 'Semua lunas'}</span>
         </div>
       </div>
 

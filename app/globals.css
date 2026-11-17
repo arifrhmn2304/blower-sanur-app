@@ -96,6 +96,9 @@ html,
 body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: manipulation;
 }
 
 body {
@@ -137,31 +140,23 @@ button {
   outline-offset: 2px;
 }
 
-/* Thin, subtle scrollbars (visible on desktop) */
+/* Native-app feel: keep scrolling, hide scrollbars */
+html,
+body,
 .app-wrapper,
 .desktop-sidebar,
 .modal-card {
-  scrollbar-width: thin;
-  scrollbar-color: var(--line-strong) transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
 .app-wrapper::-webkit-scrollbar,
 .desktop-sidebar::-webkit-scrollbar,
 .modal-card::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-.app-wrapper::-webkit-scrollbar-track,
-.desktop-sidebar::-webkit-scrollbar-track,
-.modal-card::-webkit-scrollbar-track {
-  background: transparent;
-}
-.app-wrapper::-webkit-scrollbar-thumb,
-.desktop-sidebar::-webkit-scrollbar-thumb,
-.modal-card::-webkit-scrollbar-thumb {
-  background: var(--line-strong);
-  border-radius: 99px;
-  border: 3px solid transparent;
-  background-clip: padding-box;
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 input[type='date'] {
@@ -2165,9 +2160,13 @@ select.field option {
   font-size: 13px;
   font-weight: 700;
   color: var(--text);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.payout-row > .num {
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: none;
 }
 
 .person-meta {
