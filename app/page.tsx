@@ -26,6 +26,8 @@ import {
   Truck,
   Users,
   Wallet,
+  Sun,
+  Moon,
   CircleExclamationPoint,
 } from 'lucide-react';
 import { db, ref, onValue, update, remove } from '@/lib/firebase';
@@ -35,7 +37,7 @@ import TabPengeluaran from '../components/TabPengeluaran';
 import TabVendor from '../components/TabVendor';
 import TabRiwayat from '../components/TabRiwayat';
 import KaryawanView from '../components/KaryawanView';
-import AuthOperationsBoard from '../components/AuthOperationsBoard';
+import AuthBrandPanel from '../components/AuthBrandPanel';
 import BrandMark from '../components/BrandMark';
 
 const NAV_ITEMS = [
@@ -50,6 +52,7 @@ type ToastType = 'success' | 'error' | 'info';
 
 export default function Home() {
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [pinOwner, setPinOwner] = useState('');
   const [showPassModal, setShowPassModal] = useState(false);
   const [activeTab, setActiveTab] = useState('form');
@@ -95,6 +98,12 @@ export default function Home() {
       setUserRole(savedRole);
     }
 
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      setTheme(savedTheme);
+      document.documentElement.dataset.theme = savedTheme;
+    }
+
     const rootRef = ref(db, '/');
     const unsubscribe = onValue(rootRef, (snapshot) => {
       const data = snapshot.val();
@@ -137,6 +146,13 @@ export default function Home() {
       showToast('PIN Owner salah!', 'error');
       setPinOwner('');
     }
+  };
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
   };
 
   const handleLogout = () => {
@@ -410,21 +426,17 @@ export default function Home() {
               <span>Sanur Blower Works</span>
               <span className="live">Sistem online</span>
             </div>
-            <AuthOperationsBoard
-              globalData={globalData}
-              currentSelectedBulan={currentSelectedBulan}
-              currentSelectedTahun={currentSelectedTahun}
-            />
             <div className="auth-visual-copy">
               <div className="rule" />
-              <h2>
+              <h1>
                 Semua unit bergerak. <em>Satu layar.</em>
-              </h2>
+              </h1>
               <p>
                 Catat job, atur kurir, dan pantau untung bersih operasional Blower Sanur —
                 tanpa spreadsheet yang berantakan.
               </p>
             </div>
+            <AuthBrandPanel />
           </div>
 
           <div className="auth-panel">
@@ -475,6 +487,9 @@ export default function Home() {
 
             <div className="auth-foot">
               <span>v2.0 / 2026</span>
+              <button onClick={toggleTheme} className="theme-toggle" aria-label="Ganti tema" title="Ganti tema terang/gelap">
+                {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+              </button>
               <span>Padang · ID</span>
             </div>
           </div>
@@ -619,6 +634,9 @@ export default function Home() {
                   <span className="dot" />
                   {userRole}
                 </span>
+                <button onClick={toggleTheme} className="theme-toggle" aria-label="Ganti tema" title="Ganti tema terang/gelap">
+                  {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+                </button>
                 <button onClick={handleLogout} className="icon-btn mobile-logout" aria-label="Keluar dari akun" title="Keluar">
                   <LogOut size={17} />
                 </button>
